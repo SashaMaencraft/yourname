@@ -45,8 +45,8 @@
             cursor: pointer;
             background: var(--tg-theme-button-color, #3390ec);
             color: var(--tg-theme-button-text-color, #ffffff);
-            transition: transform 0.1s ease, opacity 0.2s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.1s ease;
+            font-family: inherit;
         }
 
         .btn:active {
@@ -54,9 +54,8 @@
         }
 
         .btn-channel {
-            background: var(--tg-theme-secondary-bg-color, '#e9ecef');
-            color: var(--tg-theme-text-color, '#000000');
-            border: 1px solid var(--tg-theme-hint-color, '#ced4da');
+            background: #26a5e4;
+            color: white;
         }
 
         .btn-max {
@@ -88,40 +87,29 @@
             align-items: center;
             gap: 6px;
         }
-
-        .status-badge {
-            background: #4caf50;
-            color: white;
-            border-radius: 20px;
-            padding: 4px 12px;
-            font-size: 11px;
-            display: inline-block;
-            margin-top: 8px;
-        }
     </style>
 </head>
 <body>
 <div class="container">
-    <!-- Три кнопки -->
     <div class="buttons">
+        <!-- Кнопка 1: Сайт -->
         <button class="btn" id="siteBtn">🌐 Перейти на сайт</button>
+        
+        <!-- Кнопка 2: Telegram канал -->
         <button class="btn btn-channel" id="channelBtn">📢 Telegram канал</button>
+        
+        <!-- Кнопка 3: MAX -->
         <button class="btn btn-max" id="maxBtn">🔥 MAX</button>
     </div>
 
-    <!-- Текстовая область (можно заменить на свой текст) -->
     <div class="info-text" id="customText">
         🎮 <strong>VisualVertex RP</strong><br>
-        Добро пожаловать! Нажимай на кнопки ниже 👇
+        Нажми на любую кнопку выше 👆
     </div>
 
-    <!-- Авторский блок -->
     <div class="footer">
         <div class="author">
             ✍️ <span>Авторский проект VisualVertex</span>
-        </div>
-        <div class="status-badge">
-            🔓 Работает при блокировках РФ
         </div>
     </div>
 </div>
@@ -130,104 +118,58 @@
     // Инициализация Telegram Mini App
     const tg = window.Telegram.WebApp;
     tg.ready();
-    tg.expand(); // на весь экран
+    tg.expand();
 
-    // ========== ВАШИ ССЫЛКИ ==========
+    // ===== ТВОИ ССЫЛКИ (ПРОВЕРЕНО) =====
     const SITE_URL = "https://visualvertexrp.netlify.app/terminology";
-    const CHANNEL_USERNAME = "VisualVertex";  // имя канала (без @)
+    const CHANNEL_URL = "https://t.me/VisualVertex";
     const MAX_URL = "https://nothere-max.netlify.app/";
 
-    // Функция открытия канала с обходом блокировок РФ
-    const openChannelWithBypass = () => {
-        // Способ 1: открыть через tg:// (напрямую в приложении Telegram)
-        try {
-            window.location.href = `tg://resolve?domain=${CHANNEL_USERNAME}`;
-        } catch(e) {
-            console.log("tg:// не сработал, пробуем зеркала");
-        }
-        
-        // Способ 2: через 300мс открываем зеркало в новой вкладке
-        setTimeout(() => {
-            const mirrors = [
-                `https://t.me/${CHANNEL_USERNAME}`,
-                `https://tdl.me/${CHANNEL_USERNAME}`,
-                `https://t.me/s/${CHANNEL_USERNAME}`
-            ];
-            window.open(mirrors[0], '_blank');
-        }, 300);
-    };
-
-    // Функция безопасного перехода по ссылке
-    const navigateTo = (url, name) => {
-        if (!url || url === "") {
+    // Универсальная функция открытия ссылок (работает везде)
+    function openLink(url, name) {
+        if (!url) {
             tg.showPopup({
                 title: "Ошибка",
-                message: `Ссылка для "${name}" не настроена`,
-                buttons: [{ type: "ok" }]
+                message: `Ссылка для "${name}" не найдена`,
+                buttons: [{type: "ok"}]
             });
             return;
         }
         
+        // Пробуем открыть в новой вкладке
+        window.open(url, '_blank');
+        
+        // Показываем уведомление
         tg.showPopup({
-            title: "Переход",
-            message: `Открыть ${name}?`,
-            buttons: [
-                { type: "cancel", text: "Отмена" },
-                { type: "ok", text: "Открыть" }
-            ]
-        }, (btnId) => {
-            if (btnId === "ok") {
-                window.location.href = url;
-                tg.close();
-            }
+            title: "Открытие",
+            message: `Открывается ${name}...`,
+            buttons: [{type: "ok"}]
         });
-    };
+    }
 
-    // ========== ОБРАБОТЧИКИ КНОПОК ==========
-    
     // Кнопка 1: Сайт
-    document.getElementById('siteBtn').onclick = () => {
-        navigateTo(SITE_URL, "сайт VisualVertex");
+    document.getElementById('siteBtn').onclick = function() {
+        openLink(SITE_URL, "сайт");
     };
 
-    // Кнопка 2: Telegram канал (с обходом блокировок)
-    document.getElementById('channelBtn').onclick = () => {
-        tg.showPopup({
-            title: "Открыть канал",
-            message: `Переход в Telegram канал @${CHANNEL_USERNAME}\n(обход блокировок РФ активен)`,
-            buttons: [
-                { type: "cancel", text: "Отмена" },
-                { type: "ok", text: "Перейти" }
-            ]
-        }, (btnId) => {
-            if (btnId === "ok") {
-                openChannelWithBypass();
-                tg.close();
-            }
-        });
+    // Кнопка 2: Telegram канал
+    document.getElementById('channelBtn').onclick = function() {
+        openLink(CHANNEL_URL, "Telegram канал");
     };
 
     // Кнопка 3: MAX
-    document.getElementById('maxBtn').onclick = () => {
-        navigateTo(MAX_URL, "MAX");
+    document.getElementById('maxBtn').onclick = function() {
+        openLink(MAX_URL, "MAX");
     };
 
-    // ===== ЕСЛИ ХОЧЕШЬ ИЗМЕНИТЬ ТЕКСТ - МЕНЯЙ ЗДЕСЬ =====
-    const YOUR_CUSTOM_TEXT = `
-        🚀 <strong>Добро пожаловать в VisualVertex!</strong><br><br>
-        📌 <strong>Сайт:</strong> Терминология проекта<br>
-        📢 <strong>Канал:</strong> @VisualVertex<br>
-        🔥 <strong>MAX:</strong> Дополнительный раздел<br><br>
-        <span style="font-size:13px;">✅ Все ссылки работают даже при блокировках РФ</span>
+    // Твой текст (можешь заменить)
+    document.getElementById('customText').innerHTML = `
+        🚀 <strong>VisualVertex Project</strong><br><br>
+        📌 Сайт: visualvertexrp.netlify.app<br>
+        📢 Канал: @VisualVertex<br>
+        🔥 MAX: nothere-max.netlify.app<br><br>
+        ✅ Нажми на любую кнопку - ссылка откроется в новой вкладке
     `;
-    
-    document.getElementById('customText').innerHTML = YOUR_CUSTOM_TEXT;
-    
-    // Отправка данных в Telegram (для аналитики)
-    tg.sendData(JSON.stringify({
-        event: "app_started",
-        timestamp: Date.now()
-    }));
 </script>
 </body>
 </html>
