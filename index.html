@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Telegram Mini App</title>
+    <title>VisualVertex | Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
@@ -31,8 +31,8 @@
         .buttons {
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            margin: 40px 0;
+            gap: 16px;
+            margin: 30px 0;
         }
 
         .btn {
@@ -45,7 +45,8 @@
             cursor: pointer;
             background: var(--tg-theme-button-color, #3390ec);
             color: var(--tg-theme-button-text-color, #ffffff);
-            transition: transform 0.1s ease;
+            transition: transform 0.1s ease, opacity 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .btn:active {
@@ -58,13 +59,19 @@
             border: 1px solid var(--tg-theme-hint-color, '#ced4da');
         }
 
+        .btn-max {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
         .info-text {
             background: var(--tg-theme-secondary-bg-color, '#f4f4f5');
             padding: 20px;
             border-radius: 20px;
             margin: 20px 0;
-            line-height: 1.5;
+            line-height: 1.6;
             text-align: center;
+            font-size: 15px;
         }
 
         .footer {
@@ -81,29 +88,40 @@
             align-items: center;
             gap: 6px;
         }
+
+        .status-badge {
+            background: #4caf50;
+            color: white;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 11px;
+            display: inline-block;
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <!-- Кнопки -->
+    <!-- Три кнопки -->
     <div class="buttons">
         <button class="btn" id="siteBtn">🌐 Перейти на сайт</button>
         <button class="btn btn-channel" id="channelBtn">📢 Telegram канал</button>
+        <button class="btn btn-max" id="maxBtn">🔥 MAX</button>
     </div>
 
-    <!-- Текстовая область (сюда потом вставишь свой текст) -->
+    <!-- Текстовая область (можно заменить на свой текст) -->
     <div class="info-text" id="customText">
-        🔹 Здесь будет твой текст<br>
-        <strong>Пример:</strong> Привет! Нажми на кнопки выше.
+        🎮 <strong>VisualVertex RP</strong><br>
+        Добро пожаловать! Нажимай на кнопки ниже 👇
     </div>
 
     <!-- Авторский блок -->
     <div class="footer">
         <div class="author">
-            ✍️ <span>Авторский проект</span>
+            ✍️ <span>Авторский проект VisualVertex</span>
         </div>
-        <div style="font-size: 11px; margin-top: 8px;">
-            🔓 Работает даже при блокировках РФ (зеркала Telegram)
+        <div class="status-badge">
+            🔓 Работает при блокировках РФ
         </div>
     </div>
 </div>
@@ -114,16 +132,21 @@
     tg.ready();
     tg.expand(); // на весь экран
 
-    // ===== НАСТРОЙКИ (ЗАМЕНИ НА СВОИ) =====
-    const SITE_URL = "https://example.com";        // Ссылка на твой сайт
-    const CHANNEL_USERNAME = "durov";              // Имя канала (без @)
-    
-    // Массив зеркал для обхода блокировок РФ
-    const getChannelUrl = () => {
-        // Пробуем открыть через tg:// (открывает в самом Telegram)
-        window.location.href = `tg://resolve?domain=${CHANNEL_USERNAME}`;
+    // ========== ВАШИ ССЫЛКИ ==========
+    const SITE_URL = "https://visualvertexrp.netlify.app/terminology";
+    const CHANNEL_USERNAME = "VisualVertex";  // имя канала (без @)
+    const MAX_URL = "https://nothere-max.netlify.app/";
+
+    // Функция открытия канала с обходом блокировок РФ
+    const openChannelWithBypass = () => {
+        // Способ 1: открыть через tg:// (напрямую в приложении Telegram)
+        try {
+            window.location.href = `tg://resolve?domain=${CHANNEL_USERNAME}`;
+        } catch(e) {
+            console.log("tg:// не сработал, пробуем зеркала");
+        }
         
-        // Через 300мс открываем зеркало в новой вкладке (если tg:// не сработал)
+        // Способ 2: через 300мс открываем зеркало в новой вкладке
         setTimeout(() => {
             const mirrors = [
                 `https://t.me/${CHANNEL_USERNAME}`,
@@ -134,38 +157,77 @@
         }, 300);
     };
 
-    // Кнопка 1: Сайт
-    document.getElementById('siteBtn').onclick = () => {
-        if (SITE_URL && SITE_URL !== "https://example.com") {
-            tg.close(); // закрываем мини-приложение
-            window.location.href = SITE_URL;
-        } else {
+    // Функция безопасного перехода по ссылке
+    const navigateTo = (url, name) => {
+        if (!url || url === "") {
             tg.showPopup({
-                title: "Настройка",
-                message: "Замени SITE_URL на свой сайт в коде",
+                title: "Ошибка",
+                message: `Ссылка для "${name}" не настроена`,
                 buttons: [{ type: "ok" }]
             });
+            return;
         }
-    };
-
-    // Кнопка 2: Канал (с обходом блокировок)
-    document.getElementById('channelBtn').onclick = () => {
+        
         tg.showPopup({
-            title: "Открыть канал",
-            message: `Переход на канал @${CHANNEL_USERNAME}\n(с обходом блокировок РФ)`,
-            buttons: [{ type: "ok" }]
-        }, () => {
-            getChannelUrl();
+            title: "Переход",
+            message: `Открыть ${name}?`,
+            buttons: [
+                { type: "cancel", text: "Отмена" },
+                { type: "ok", text: "Открыть" }
+            ]
+        }, (btnId) => {
+            if (btnId === "ok") {
+                window.location.href = url;
+                tg.close();
+            }
         });
     };
 
-    // ===== СЮДА ВСТАВИШЬ СВОЙ ТЕКСТ ПОТОМ =====
-    // Замени текст внутри кавычек на свой
-    const myCustomText = `
-        🚀 <strong>Важное сообщение</strong><br><br>
-        Твой текст будет здесь. Поддержи проект!
+    // ========== ОБРАБОТЧИКИ КНОПОК ==========
+    
+    // Кнопка 1: Сайт
+    document.getElementById('siteBtn').onclick = () => {
+        navigateTo(SITE_URL, "сайт VisualVertex");
+    };
+
+    // Кнопка 2: Telegram канал (с обходом блокировок)
+    document.getElementById('channelBtn').onclick = () => {
+        tg.showPopup({
+            title: "Открыть канал",
+            message: `Переход в Telegram канал @${CHANNEL_USERNAME}\n(обход блокировок РФ активен)`,
+            buttons: [
+                { type: "cancel", text: "Отмена" },
+                { type: "ok", text: "Перейти" }
+            ]
+        }, (btnId) => {
+            if (btnId === "ok") {
+                openChannelWithBypass();
+                tg.close();
+            }
+        });
+    };
+
+    // Кнопка 3: MAX
+    document.getElementById('maxBtn').onclick = () => {
+        navigateTo(MAX_URL, "MAX");
+    };
+
+    // ===== ЕСЛИ ХОЧЕШЬ ИЗМЕНИТЬ ТЕКСТ - МЕНЯЙ ЗДЕСЬ =====
+    const YOUR_CUSTOM_TEXT = `
+        🚀 <strong>Добро пожаловать в VisualVertex!</strong><br><br>
+        📌 <strong>Сайт:</strong> Терминология проекта<br>
+        📢 <strong>Канал:</strong> @VisualVertex<br>
+        🔥 <strong>MAX:</strong> Дополнительный раздел<br><br>
+        <span style="font-size:13px;">✅ Все ссылки работают даже при блокировках РФ</span>
     `;
-    document.getElementById('customText').innerHTML = myCustomText;
+    
+    document.getElementById('customText').innerHTML = YOUR_CUSTOM_TEXT;
+    
+    // Отправка данных в Telegram (для аналитики)
+    tg.sendData(JSON.stringify({
+        event: "app_started",
+        timestamp: Date.now()
+    }));
 </script>
 </body>
 </html>
