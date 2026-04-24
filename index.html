@@ -62,10 +62,11 @@
             color: white;
             border: 1px solid #2d8ac0;
         }
-        .btn-max {
-            background: linear-gradient(135deg, #5b4b8c, #3a2a62);
+        .btn-ifous {
+            background: linear-gradient(135deg, #7c3a5e, #4a2a5e);
             color: white;
-            border: 1px solid #8b6fd0;
+            border: 1px solid #b96f9e;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.3);
         }
 
         /* ===== ЗАГОЛОВОК ТЕРМИНОВ ===== */
@@ -198,7 +199,7 @@
             font-size: 0.75rem;
         }
 
-        /* 🟥 НАКАЗАНИЯ / БАН / ВАРН — яркий красный акцент (без потери читаемости) */
+        /* 🟥 НАКАЗАНИЯ / БАН / ВАРН — яркий красный акцент */
         .term-card.punishment-card {
             border-left: 5px solid #e11d48;
             background: #1a1425;
@@ -220,7 +221,6 @@
         .term-desc strong, .punishment-highlight {
             color: #ff8a9f;
         }
-        /* дополнительно подсветка в примере */
         .rp-example .punishment-text {
             color: #ff7b89;
             font-weight: 600;
@@ -275,7 +275,7 @@
             color: #b9c7e0;
         }
 
-        /* небольшая "подсказка" для клавиатурной прокрутки */
+        /* подсказка для клавиатурной прокрутки */
         .keyboard-hint {
             text-align: right;
             font-size: 0.7rem;
@@ -296,17 +296,17 @@
 </head>
 <body>
 <div class="app-container">
-    <!-- небольшая визуальная подсказка про стрелки (для ПК) -->
+    <!-- подсказка про стрелки (для ПК и телеграм с клавой) -->
     <div class="keyboard-hint">
         <span>⬆ ⬇</span> <span>Прокрутка клавишами (вверх/вниз)</span>
     </div>
 
-    <!-- ===== ТРИ КНОПКИ ===== -->
+    <!-- ===== ТРИ КНОПКИ: Сайт, Канал, IFOUS (вместо MAX) ===== -->
     <div class="buttons-section">
         <div class="buttons-grid">
             <button class="main-btn btn-site" id="siteBtn">🌐 Перейти на сайт</button>
             <button class="main-btn btn-channel" id="channelBtn">📢 Telegram канал</button>
-            <button class="main-btn btn-max" id="maxBtn">🔥 MAX</button>
+            <button class="main-btn btn-ifous" id="ifousBtn">🔥 IFOUS</button>
         </div>
     </div>
 
@@ -353,10 +353,10 @@
         tg.expand();
     }
 
-    // ===== ССЫЛКИ ДЛЯ КНОПОК (НЕ МЕНЯЕМ) =====
+    // ===== ССЫЛКИ ДЛЯ КНОПОК (IFOUS вместо MAX) =====
     const SITE_URL = "https://visualvertexrp.netlify.app/terminology";
     const CHANNEL_URL = "https://t.me/VisualVertex";
-    const MAX_URL = "https://nothere-max.netlify.app/";
+    const IFOUS_URL = "https://ifous.netlify.app/";    // новая ссылка по требованию
 
     function openLink(url, name) {
         if (!url) {
@@ -368,14 +368,9 @@
 
     document.getElementById('siteBtn').onclick = () => openLink(SITE_URL, "сайт");
     document.getElementById('channelBtn').onclick = () => openLink(CHANNEL_URL, "Telegram канал");
-    document.getElementById('maxBtn').onclick = () => openLink(MAX_URL, "MAX");
+    document.getElementById('ifousBtn').onclick = () => openLink(IFOUS_URL, "IFOUS");
 
-    // ===== РАСШИРЕННАЯ БАЗА ТЕРМИНОВ (сохраняем все оригинальные + добавляем ключевые слова наказаний: бан, варн, мут и т.д.) =====
-    // В описание терминов добавим флаги наказаний, чтобы подсвечивать карточки красным.
-    // Для каждого термина добавим необязательное поле "punishmentRelated": true, если термин связан с наказанием.
-    // Также в описание или rp-пример были добавлены упоминания "варн", "бан", чтобы логика выделения была естественной.
-    // Таким образом, никакой функционал не меняется, просто некоторые термины получают класс punishment-card.
-    
+    // ===== РАСШИРЕННАЯ БАЗА ТЕРМИНОВ (сохраняем всё + наказания подсвечены) =====
     const termsData = [
         { term: "ЗЗ", fullName: "Зеленая Зона", category: "Зона", desc: "PvP запрещён. Безопасная территория.", rpExample: "«Мы сейчас в ЗЗ, брат. Ударишь — получишь варн»." , punishment: true, punishNote: "Нарушение = варн" },
         { term: "ОЗ", fullName: "Оранжевая Зона", category: "Зона", desc: "PvP только по РП-причине.", rpExample: "«Склад на окраине — ОЗ. Ты украл мой ДМ? Валимся там»." },
@@ -391,14 +386,14 @@
         { term: "ВЗ", fullName: "Визуальный Якорь", category: "Механика", desc: "Смотреть на цель для взаимодействия.", rpExample: "Повернись к нему, только потом пиши /me обыскивает." },
         { term: "ФЛ", fullName: "Фейковый Лут", category: "Механика", desc: "Предметы только в тексте /me.", rpExample: "ФЛ — пачка чипсов. Не продать, но съесть можно." },
         { term: "ХД", fullName: "Холодный Дроп", category: "Механика", desc: "Брошенный предмет исчезает через 2 минуты.", rpExample: "Уронил ключи — через 120 секунд испарятся." },
-        // ДОПОЛНИТЕЛЬНЫЕ ТЕРМИНЫ С НАКАЗАНИЯМИ (бан, мут, варн) чтобы красные карточки были заметны:
+        // термины наказаний:
         { term: "ВАРН", fullName: "Предупреждение", category: "Статус", desc: "Официальное предупреждение администрации. 3 варна = временный бан.", rpExample: "Получил варн за неотъигровку ДТП. Больше так не буду.", punishment: true, punishNote: "Варн счётчик наказаний" },
         { term: "БАН", fullName: "Блокировка аккаунта", category: "Статус", desc: "Полная блокировка за грубые нарушения: читы, оскорбления, массовый ДМ.", rpExample: "Его забанили на месяц за багоюз.", punishment: true, punishNote: "Самый строгий тип наказания" },
         { term: "МУТ", fullName: "Заглушение чата", category: "Статус", desc: "Запрет на написание в чат на определённое время (флуд, оскорбления).", rpExample: "Не кричи в глобалку — получишь мут на час.", punishment: true, punishNote: "Мут чата/рации" },
         { term: "АФК-кик", fullName: "Принудительный выход", category: "Механика", desc: "Автоматическое отключение за бездействие более 15 минут. Не наказание, но потеря прогресса.", rpExample: "Отошёл покурить — вернулся, а тебя кикнуло за АФК." }
     ];
 
-    // Шпаргалка (расширим для наглядности, но оригинальные строки сохраним)
+    // Шпаргалка (добавлены строки про БАН/ВАРН/МУТ для полноты)
     const cheatRows = [
         ["ЗЗ","Зеленая Зона","Не убивать"],["ОЗ","Оранжевая Зона","Драться по РП-причине"],
         ["КЗ","Красная Зона","Валить всех"],["ДМ","Дикий Матч","Жалоба / Бан"],
@@ -411,7 +406,7 @@
         ["МУТ","Заглушение чата","Флуд / оскорбления"]
     ];
 
-    // Функция рендера карточек с учётом наказаний: добавляем класс punishment-card и бейдж если нужно
+    // Функция рендера карточек с учётом наказаний и красной подсветкой
     function renderTerms(filterCat = "all", search = "") {
         const grid = document.getElementById("termsGrid");
         let filtered = termsData.filter(t => filterCat === "all" || t.category === filterCat);
@@ -425,7 +420,7 @@
         }
         
         grid.innerHTML = filtered.map(t => {
-            // проверяем связан ли термин с наказанием (бан, варн, мут и т.д.)
+            // Проверка: связан ли термин с наказанием (бан, варн, мут и т.д.)
             const isPunishment = t.punishment === true || 
                                  t.term.toLowerCase().includes("бан") || 
                                  t.term.toLowerCase().includes("варн") ||
@@ -436,10 +431,8 @@
             const cardClass = isPunishment ? "term-card punishment-card" : "term-card";
             const badgeExtra = isPunishment ? `<span class="punishment-tag">⚠️ НАКАЗАНИЕ</span>` : "";
             
-            // также можно добавить красную подсветку внутри описания - дублируем логику, но не изменяя структуры, сохраняем оригинальные тексты
             let descText = t.desc;
             if (isPunishment) {
-                // Просто слегка выделяем ключевые слова (не меняя смысл)
                 descText = descText.replace(/бан/gi, '<span class="punishment-highlight">бан</span>');
                 descText = descText.replace(/варн/gi, '<span class="punishment-highlight">варн</span>');
                 descText = descText.replace(/мут/gi, '<span class="punishment-highlight">мут</span>');
@@ -470,8 +463,8 @@
         const tbody = document.querySelector("#cheatsheetTable tbody");
         if (!tbody) return;
         tbody.innerHTML = cheatRows.map(r => {
-            // небольшая стилизация, если в шпаргалке термины наказания — добавим красный оттенок текста
             let termCell = `<b>${r[0]}</b>`;
+            // подсветка в шпаргалке для терминов наказаний
             if (r[0] === "БАН" || r[0] === "ВАРН" || r[0] === "МУТ" || r[0] === "ДМ") {
                 termCell = `<b style="color:#ff7b89;">${r[0]}</b>`;
             }
@@ -492,11 +485,9 @@
         });
     });
 
-    // ========== ПРОКРУТКА КЛАВИШАМИ ВВЕРХ/ВНИЗ (ОДНОЙ КНОПКОЙ - СТРЕЛКИ) ==========
-    // Добавляем возможность прокручивать страницу вверх/вниз клавишами "ArrowUp" / "ArrowDown"
-    // Работает как на компьютере так и на внешних клавиатурах в телеграм (если подключена)
+    // ========== ПРОКРУТКА КЛАВИШАМИ ВВЕРХ/ВНИЗ (работает везде) ==========
     window.addEventListener("keydown", function(e) {
-        // стрелка вверх - прокрутка вверх на 80px (плавная)
+        // стрелка вверх - прокрутка вверх
         if (e.key === "ArrowUp") {
             e.preventDefault();
             window.scrollBy({ top: -120, behavior: "smooth" });
@@ -506,7 +497,7 @@
             e.preventDefault();
             window.scrollBy({ top: 120, behavior: "smooth" });
         }
-        // дополнительно: PageUp / PageDown (для удобства)
+        // PageUp / PageDown
         else if (e.key === "PageUp") {
             e.preventDefault();
             window.scrollBy({ top: -window.innerHeight * 0.8, behavior: "smooth" });
@@ -515,7 +506,7 @@
             e.preventDefault();
             window.scrollBy({ top: window.innerHeight * 0.8, behavior: "smooth" });
         }
-        // также Home / End
+        // Home / End
         else if (e.key === "Home") {
             e.preventDefault();
             window.scrollTo({ top: 0, behavior: "smooth" });
@@ -526,18 +517,9 @@
         }
     });
     
-    // первичный рендер
+    // Стартовый рендер
     renderCheatsheet();
     renderTerms("all", "");
-    
-    // Добавим небольшую фоновую адаптацию для контента, чтобы при наведении было видно красные карточки
-    // стили уже встроены, всё работает.
-    // ДОПОЛНИТЕЛЬНАЯ ВИЗУАЛЬНАЯ ПОМЕТКА: если термин имеет punishment true, то красный бейдж яркий.
-    // Также ни один из существующих скриптов/ссылок не заменён, функционал сохранён на 100%
-    
-    // Чтобы термины с наказаниями подсвечивались в списке сразу – уже выполняется через рендер.
-    // В терминах, которые изначально не имели пометки punishment, но контекстно связаны (например, ДМ содержит в описании слово БАН), 
-    // они также получат класс punishment-card за счет динамической проверки в рендере (isPunishment).
 </script>
 </body>
 </html>
