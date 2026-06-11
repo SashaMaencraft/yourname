@@ -73,7 +73,7 @@
 
 | Ресурс | Ссылка |
 |--------|--------|
-| **Основной сайт** | [VisualVertexRP](ttps://sashamaencraft.github.io/VisualVertexRP/) |
+| **Основной сайт** | [VisualVertexRP](https://sashamaencraft.github.io/VisualVertexRP/) |
 | **Telegram-канал** | [@VisualVertex](https://t.me/VisualVertex) |
 | **Партнёр IFOUS** | [ifous.netlify.app](https://ifous.netlify.app/) |
 
