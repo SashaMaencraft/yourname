@@ -73,7 +73,7 @@
 
 | Ресурс | Ссылка |
 |--------|--------|
-| **Основной сайт** | [visualvertexrp.netlify.app](https://visualvertexrp.netlify.app/terminology) |
+| **Основной сайт** | ttps://sashamaencraft.github.io/VisualVertexRP/ |
 | **Telegram-канал** | [@VisualVertex](https://t.me/VisualVertex) |
 | **Партнёр IFOUS** | [ifous.netlify.app](https://ifous.netlify.app/) |
 
