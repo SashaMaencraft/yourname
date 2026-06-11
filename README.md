@@ -75,7 +75,7 @@
 |--------|--------|
 | **Основной сайт** | [VisualVertexRP](https://sashamaencraft.github.io/VisualVertexRP/) |
 | **Telegram-канал** | [@VisualVertex](https://t.me/VisualVertex) |
-| **Партнёр IFOUS** | [ifous1.netlify.app](https://ifous1.netlify.app/) |
+| **Партнёр IFOUS** | [ifo](https://sashamaencraft.github.io/ifo/) |
 
 ---
 
